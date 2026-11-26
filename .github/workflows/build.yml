@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: |
+          mkdir -p www
+          cp index.html manifest.json sw.js icon-192.png icon-512.png www/
+          if [ -d audio ]; then cp -r audio www/; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -26,4 +30,3 @@ jobs:
         with:
           name: tasbih-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          
