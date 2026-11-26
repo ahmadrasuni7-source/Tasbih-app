@@ -131,7 +131,7 @@ function ui(){const d=cur();$("#ar").textContent=d.ar||d.t;$("#lt").textContent=
  $("#n").textContent=S.n;$("#of").textContent=(S.tg?"dari "+S.tg:"tanpa batas")+(S.r?" · putaran ke-"+(S.r+1):"");
  $("#fill").style.width=(S.tg?S.n/S.tg*100:0)+"%"}
 function theme(){const t=TH[S.th],r=document.documentElement.style;r.setProperty("--a",t[1]);r.setProperty("--b",t[2]);r.setProperty("--ac",t[3])}
- 
+
 /* canvas 3D */
 const cv=$("#cv"),ctx=cv.getContext("2d");let cw=0,ch=0,FH=0,ay=0,DP=1,GS=44,yaw=0,yawT=0,drag=0,ST=[],FX=[],DR=[];
 for(let i=0;i<90;i++)ST.push([Math.random(),Math.random(),Math.random()*6.3,.6+Math.random()*1.4]);
