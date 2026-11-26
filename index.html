@@ -94,7 +94,7 @@ function tts(d,fin){if(!("speechSynthesis" in window)){fin();return}const vs=spe
 function say(cb){let c=0,t=0;const fin=()=>{if(!c){c=1;cb&&cb()}},go=d=>{if(!t){t=1;tts(d,fin)}};
  const d=cur(),a=new Audio("audio/"+d.t.toLowerCase().replace(/[^a-z]/g,"")+".mp3");a.volume=S.vol;a.onended=fin;a.onerror=()=>go(d);a.play().catch(()=>go(d));setTimeout(fin,9000)}
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
-
+ 
 /* suara latar */
 const AMB=[["off","Tanpa latar"],["rain","Hujan"],["wave","Ombak"],["wind","Angin"],["river","Sungai"]];
 let NB={},AM=null;
@@ -222,9 +222,8 @@ cv.addEventListener("pointermove",e=>{
 cv.addEventListener("pointerup",()=>{if(!pd)return;if(moved<10||acc>STEP*.5)tap();pd=null;acc=0;drag=0});
 cv.addEventListener("pointercancel",()=>{pd=null;acc=0;drag=0});
 cv.addEventListener("pointerleave",()=>{yawT=0});
- 
 
-/* settings UI */
+ /* settings UI */
 function chips(id,items,get,set){const e=$(id);e.innerHTML="";items.forEach((x,i)=>{const b=document.createElement("button");b.className="chip"+(get(i)?" on":"");b.textContent=Array.isArray(x)?x[x.length>2?0:1]:x;b.onclick=()=>{set(i);chips(id,items,get,set)};e.appendChild(b)})}
 function build(){
  chips("#c-th",TH,i=>S.th===i,i=>{S.th=i;theme();save()});
