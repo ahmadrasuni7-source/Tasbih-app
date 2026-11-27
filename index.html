@@ -435,5 +435,5 @@ $("#close").onclick=()=>$("#sheet").classList.remove("open");
 $("#rst").onclick=()=>{S.n=0;S.r=0;ui();save()};
 $("#undo").onclick=()=>{if(S.n>0){S.n--;tp--;ui();save()}};
 theme();build();ui();size();draw();
-if("serviceWorker" in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&location.hostname!=="localhost"){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register("sw.js").catch(()=>{});navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had)location.reload()})}
 </script></body></html>
