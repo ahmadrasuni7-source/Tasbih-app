@@ -4,7 +4,7 @@
 <title>Tasbih Digital 3D</title>
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#070f24"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--a:#070f24;--b:#1f3a78;--ac:#ffd27a;--tx:#f4f1e8;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--a:#070f24;--b:#1f3a78;--ac:#ffd27a;--tx:#f4f1e8;color-scheme:dark;box-sizing:border-box;padding-top:max(env(safe-area-inset-top,0px),var(--safe-area-inset-top,0px));padding-bottom:max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px))}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
 body{background:radial-gradient(120% 90% at 50% 0%,var(--b),var(--a));color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;overflow:hidden;user-select:none}
@@ -25,9 +25,15 @@ header,#cnt,#bar,#hint{position:relative;z-index:1;pointer-events:none;text-shad
 nav{display:flex;gap:10px;padding:8px 16px 14px;justify-content:center}
 button{font:inherit;color:var(--tx);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:10px 18px;cursor:pointer}
 button:active{transform:scale(.96)}
-nav{flex-wrap:wrap}.o{margin-top:8px}#arw{display:inline-flex;align-items:center;gap:10px;pointer-events:none}#tgo{margin-left:8px;vertical-align:middle}#dzb,#tgo{pointer-events:auto;width:30px;height:30px;padding:0;border-radius:50%;font-size:13px;line-height:1;background:rgba(255,255,255,.15)}nav button{padding:9px 13px;font-size:14px}#au.on{background:var(--ac);color:#111;border-color:var(--ac)}
-#sheet,#ssheet,#dsheet,#tsheet{position:fixed;left:0;right:0;bottom:0;max-height:80%;overflow:auto;background:rgba(9,13,28,.94);backdrop-filter:blur(14px);border-radius:22px 22px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .3s;z-index:5}
-#sheet.open,#ssheet.open,#dsheet.open,#tsheet.open{transform:none}
+nav{flex-wrap:wrap}
+#cf{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9}#cf.open{display:flex}#cfb{background:#1b2236;color:#f4f1e8;padding:20px;border-radius:16px;min-width:250px;text-align:center}.light #cfb{background:#fff;color:#1a1f2b}
+
+.light header,.light #cnt,.light #bar,.light #hint{text-shadow:none}.light #bar{background:rgba(0,0,0,.12)}
+.light button{background:rgba(0,0,0,.07);border-color:rgba(0,0,0,.2)}
+.light #sheet,.light #ssheet,.light #dsheet,.light #tsheet,.light #psheet{background:rgba(255,255,255,.97)}
+.light input,.light select{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.2)}.o{margin-top:8px}#arw{display:inline-flex;align-items:center;gap:10px;pointer-events:none}#nw{position:relative;display:inline-block}#cbt{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:12px;display:flex;flex-direction:column;gap:6px}#dzb,#tgo,#undo{pointer-events:auto;width:30px;height:30px;padding:0;border-radius:50%;font-size:13px;line-height:1;background:rgba(255,255,255,.15)}nav button{padding:9px 11px;font-size:14px}#au.on{background:var(--ac);color:#111;border-color:var(--ac)}
+#sheet,#ssheet,#dsheet,#tsheet,#psheet{position:fixed;left:0;right:0;bottom:0;max-height:80%;overflow:auto;background:rgba(9,13,28,.94);backdrop-filter:blur(14px);border-radius:22px 22px 0 0;padding:16px 16px calc(24px + max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px)));transform:translateY(105%);transition:transform .3s;z-index:5}
+#sheet.open,#ssheet.open,#dsheet.open,#tsheet.open,#psheet.open{transform:none}
 h3{font-size:13px;margin:16px 0 8px;opacity:.7;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:7px 14px;font-size:14px}
@@ -38,18 +44,29 @@ select option{color:#111}
 input[type=range]{width:100%;padding:0;accent-color:var(--ac)}
 </style></head><body>
 <header><div id="arw"><div id="ar"></div><button id="dzb" title="Ganti dzikir">▼</button></div><div id="lt"></div></header>
-<div id="cnt"><span id="n">0</span><button id="tgo" title="Target dzikir">▼</button><span id="of"></span></div>
+<div id="cnt"><span id="nw"><span id="n">0</span><span id="cbt"><button id="undo" title="Undo">↩</button><button id="tgo" title="Target dzikir">▼</button></span></span><span id="of"></span></div>
 <div id="bar"><i id="fill"></i></div>
 <canvas id="cv"></canvas>
 <div id="hint">Ketuk atau tarik layar · keyboard: Spasi, Enter, ↑</div>
-<nav><button id="undo">↩ Undo</button><button id="rst">Reset</button><button id="au">▶ Auto</button><button id="snd">🔊 Suara</button><button id="set">🎨 Tema</button></nav>
+<nav><button id="rst">Reset</button><button id="au">▶ Auto</button><button id="snd">🔊 Suara</button><button id="set">🎨 Tema</button></nav>
 <section id="sheet">
 <div class="f" style="margin:0"><b style="flex:1;font-size:18px">Tema</b><button id="close">Tutup</button></div>
 <h3>Tema objek</h3><div class="row" id="c-ob"></div>
 <div id="sec-kl"><h3>Tema latar (khusus Klasik)</h3><div class="row" id="c-th"></div>
 <h3>Posisi tasbih</h3><div class="row" id="c-ly"></div>
 <h3>Warna manik</h3><div class="row" id="c-bc"></div></div>
+<h3>Bahasa</h3><div class="row" id="c-lg"></div>
+<h3>Pengingat harian</h3><div class="row" id="t-nd"></div><div class="f" style="align-items:center"><span style="flex:1">Jam pengingat harian</span><input id="ndt" type="time" style="flex:none"></div>
+<div style="font-size:13px;margin:12px 0 6px">Ingatkan lanjut dzikir setelah 30 menit berhenti</div><div class="row" id="t-ni"></div>
+<div style="font-size:12px;opacity:.55;margin-top:8px">Pengingat hanya berfungsi di aplikasi Android.</div>
 </section>
+<div id="cf"><div id="cfb"><div id="cft" style="margin-bottom:12px"></div><div class="f" style="justify-content:center"><button id="cfy">Ya</button><button id="cfn">Batal</button></div></div></div>
+<section id="psheet"><div class="f" style="margin:0"><b style="flex:1;font-size:18px">Premium ⭐</b><button id="pclose">Tutup</button></div>
+<div id="pst" style="margin:10px 0;font-size:14px"></div>
+<div style="font-size:14px;line-height:1.7">✔ Kalimba E, G, A, C tinggi, E tinggi<br>✔ Rekam suara sendiri<br>✔ Tema objek: Mobil, Baterai, Ikan, Api, Dolar ATM, Kantong Dinar, Samsak, Panah, Cuci Baju, Siram Bunga, Tendang Bola, Lempar Batu, Olahraga, Pabrik Donat</div>
+<div id="pbuy"><div class="f"><button id="pb1" style="flex:1">US$1 / 6 bulan (langganan)</button></div><div class="f"><button id="pb2" style="flex:1">US$2 selamanya (sekali bayar)</button></div><div class="f"><button id="pbr" style="flex:1">Pulihkan pembelian</button></div></div>
+<div class="f"><input id="pcode" placeholder="Punya kode premium?" autocapitalize="characters" autocomplete="off"><button id="pcb">Aktifkan</button></div>
+<div id="pnote" style="font-size:12px;opacity:.7;margin-top:10px">Langganan diperpanjang otomatis tiap 6 bulan sampai dibatalkan di Google Play. Pembelian hanya tersedia di aplikasi Android.</div></section>
 <section id="tsheet"><div class="f" style="margin:0"><b style="flex:1;font-size:18px">Target dzikir</b><button id="tclose">Tutup</button></div>
 <div class="row" id="c-tg" style="margin-top:12px"></div><div class="f"><input id="tgi" type="number" min="1" placeholder="Target sendiri, mis. 250"><button id="tgb">Atur</button></div></section>
 <section id="dsheet"><div class="f" style="margin:0"><b style="flex:1;font-size:18px">Pilih dzikir</b><button id="dclose">Tutup</button></div>
@@ -65,24 +82,178 @@ input[type=range]{width:100%;padding:0;accent-color:var(--ac)}
 <h3>Suara tema objek (mobil, samsak, dll.)</h3><div class="row" id="t-ts"></div>
 <h3>Voice saat mode Auto</h3><div class="row" id="t-av"></div><div id="o-av" class="o"><div id="gpl" style="font-size:13px;opacity:.7;margin:4px 0"></div><input id="gp" type="range" min="0.5" max="8" step="0.5"></div>
 <h3>Getar saat target</h3><div class="row" id="t-vb"></div>
-<h3>Rekam suara sendiri (untuk dzikir terpilih)</h3>
+<h3 id="rech">Rekam suara sendiri (untuk dzikir terpilih)</h3>
 <div class="row"><button id="rb1">● Rekam</button><button id="rb2">■ Stop</button><button id="rb3">▶ Putar</button><button id="rb4">🗑 Hapus</button></div>
 <div id="rcs" style="font-size:13px;opacity:.75;margin-top:8px"></div>
 <div style="font-size:12px;opacity:.55;margin-top:6px">Urutan suara dzikir: rekaman Anda, lalu file audio, lalu suara perangkat.</div>
 </section>
 <script>
 const $=s=>document.querySelector(s);
-const TH=[["Malam","#070f24","#1f3a78","#ffd27a"],["Hutan","#06201a","#1f6b4f","#f2d98a"],["Samudra","#02222e","#0e7c8f","#b8f1ff"],["Fajar","#2a1034","#c2587a","#ffe3a3"],["Gurun","#3b2410","#b8742f","#fff1c9"],["Hitam","#000000","#1c1c22","#e5e5e5"],["Hitam Pekat","#000000","#000000","#ffd27a"]];
+const TH=[["Malam","#070f24","#1f3a78","#ffd27a"],["Hutan","#06201a","#1f6b4f","#f2d98a"],["Samudra","#02222e","#0e7c8f","#b8f1ff"],["Fajar","#2a1034","#c2587a","#ffe3a3"],["Gurun","#3b2410","#b8742f","#fff1c9"],["Hitam","#000000","#1c1c22","#e5e5e5"],["Hitam Pekat","#000000","#000000","#ffd27a"],["Putih","#e3e7ee","#ffffff","#b8860b","#1a1f2b",1]];
 const BC=[["Emas","#ffe9a8","#9a6a00"],["Zamrud","#9af0c4","#0b6b45"],["Rubi","#ffb0b8","#8d1030"],["Mutiara","#ffffff","#8a8fa3"],["Obsidian","#8a8a98","#101018"]];
 const DEF=[{ar:"سُبْحَانَ اللّٰهِ",t:"Subhanallah"},{ar:"اَلْحَمْدُ لِلّٰهِ",t:"Alhamdulillah"},{ar:"اللّٰهُ أَكْبَرُ",t:"Allahu Akbar"},{ar:"أَسْتَغْفِرُ اللّٰهَ",t:"Astaghfirullah"},{ar:"لَا إِلٰهَ إِلَّا اللّٰهُ",t:"La ilaha illallah"},{ar:"اللّٰهُمَّ صَلِّ عَلَى مُحَمَّدٍ",t:"Allahumma shalli ala Muhammad"}];
 const LY=[["ring","Lingkaran"],["fullring","Lingkaran Penuh"],["vring","Lingkaran Vertikal"],["line","Lurus"],["side","Samping"]];
-const OB=[["0","Klasik"],["1","Dial Teks"],["2","Air Sumur"],["3","Pohon Tumbuh"],["4","Matahari Terbit"],["5","Mobil Menanjak"],["6","Hati Bersih"],["7","Isi Baterai"],["8","Bersih Jendela"],["9","Beri Makan Ikan"],["10","Siram Api"],["11","Ambil Dolar ATM"],["12","Kantong Dinar"],["13","Pukul Samsak"],["14","Panah"]];
+const OB=[["0","Klasik"],["1","Dial Teks"],["2","Air Sumur"],["3","Pohon Tumbuh"],["4","Matahari Terbit"],["5","Mobil Menanjak"],["6","Hati Bersih"],["7","Isi Baterai"],["8","Bersih Jendela"],["9","Beri Makan Ikan"],["10","Siram Api"],["11","Ambil Dolar ATM"],["12","Kantong Dinar"],["13","Pukul Samsak"],["14","Panah"],["15","Cuci Baju Putih"],["16","Siram Bunga"],["17","Tendang Bola"],["18","Lempar Batu ke Setan"],["19","Olahraga"],["20","Pabrik Donat"]];
 const SN=[["bowl","Mangkuk"],["wood","Kayu"],["bell","Lonceng"],["press","Tombol ditekan"],["k1","Kalimba C"],["k2","Kalimba E"],["k3","Kalimba G"],["k4","Kalimba A"],["k5","Kalimba C tinggi"],["k6","Kalimba E tinggi"]];
 const VO=[["each","Tiap hitungan"],["end","Saat target"]];
 let S={th:0,ly:"ring",sh:0,bc:0,tg:33,dz:0,snd:"air",vo:"off",n:0,r:0,vol:.7,amb:"off",avol:.5,ob:0,gp:2,av:true,vc:"",vb:true,custom:[]};
 try{Object.assign(S,JSON.parse(localStorage.getItem("tasbih")||"{}"))}catch(e){}
-if(S.ob>14||S.ob<0)S.ob=0;if(S.v!==3)Object.assign(S,{v:3,sOn:false,aOn:false,vOn:false,av:false,vb:false,snd:"bowl",amb:"rain",vo:"each"});
-const save=()=>{try{localStorage.setItem("tasbih",JSON.stringify(S))}catch(e){}};
+if(S.ob>20||S.ob<0)S.ob=0;if(/[?&]dev=1/.test(location.search))S.dev=1;if(/[?&]dev=0/.test(location.search))S.dev=0;
+if(!S.t0)S.t0=Date.now();if(S.lang===undefined)S.lang="id";if(S.nd===undefined)S.nd=true;if(S.ni===undefined)S.ni=true;if(!S.ndt)S.ndt="20:00";
+if(S.v!==4)Object.assign(S,{v:4,sOn:true,aOn:true,vOn:true,av:true,tOn:true,vb:true,snd:"bowl",amb:"wave",vo:"each"});
+const save=()=>{try{S.ls=Math.max(S.ls||0,Date.now());localStorage.setItem("tasbih",JSON.stringify(S))}catch(e){}};
+const DICT={};String.raw`Ketuk atau tarik layar · keyboard: Spasi, Enter, ↑|Tap or drag the screen · keyboard: Space, Enter, ↑|اضغط أو اسحب الشاشة · لوحة المفاتيح: مسافة، إدخال، ↑
+Reset|Reset|إعادة تعيين
+▶ Auto|▶ Auto|▶ تلقائي
+⏸ Stop|⏸ Stop|⏸ إيقاف
+🔊 Suara|🔊 Sound|🔊 الصوت
+🎨 Tema|🎨 Theme|🎨 السمة
+Tema|Theme|السمة
+Tutup|Close|إغلاق
+Tema objek|Object theme|سمة الكائن
+Tema latar (khusus Klasik)|Background theme (Classic only)|سمة الخلفية (للكلاسيكي فقط)
+Posisi tasbih|Tasbih position|وضع المسبحة
+Warna manik|Bead color|لون الخرز
+Ya|Yes|نعم
+Batal|Cancel|إلغاء
+Premium ⭐|Premium ⭐|بريميوم ⭐
+✔ Kalimba E, G, A, C tinggi, E tinggi|✔ Kalimba E, G, A, high C, high E|✔ كاليمبا: مي، صول، لا، دو عالٍ، مي عالٍ
+✔ Rekam suara sendiri|✔ Record your own voice|✔ تسجيل صوتك الخاص
+✔ Tema objek: Mobil, Baterai, Ikan, Api, Dolar ATM, Kantong Dinar, Samsak, Panah, Cuci Baju, Siram Bunga, Tendang Bola, Lempar Batu, Olahraga, Pabrik Donat|✔ Object themes: Car, Battery, Fish, Fire, ATM Dollars, Dinar Pouch, Punching Bag, Archery, Washing Shirt, Watering Flower, Kick the Ball, Stoning the Devil, Workout, Donut Factory|✔ سمات الكائنات: سيارة، بطارية، سمك، نار، دولار، كيس الدنانير، كيس الملاكمة، رماية، غسل قميص، سقي زهرة، ركل الكرة، رمي الشيطان، تمارين، مصنع دونات
+US$1 / 6 bulan (langganan)|US$1 / 6 months (subscription)|1 دولار / 6 أشهر (اشتراك)
+US$2 selamanya (sekali bayar)|US$2 lifetime (one-time)|2 دولار مدى الحياة (دفعة واحدة)
+Pulihkan pembelian|Restore purchases|استعادة المشتريات
+Langganan diperpanjang otomatis tiap 6 bulan sampai dibatalkan di Google Play. Pembelian hanya tersedia di aplikasi Android.|Subscription renews every 6 months until canceled in Google Play. Purchases are only available in the Android app.|يتجدد الاشتراك تلقائيًا كل 6 أشهر حتى يتم إلغاؤه في Google Play. الشراء متاح فقط في تطبيق أندرويد.
+Target dzikir|Dhikr target|هدف الذكر
+Target sendiri, mis. 250|Custom target, e.g. 250|هدف خاص، مثال 250
+Atur|Set|تعيين
+Pilih dzikir|Choose dhikr|اختر الذكر
+Tambah dzikir baru|Add new dhikr|إضافة ذكر جديد
+Tulis dzikir...|Write a dhikr...|اكتب الذكر...
+Tambah|Add|إضافة
+Hapus dzikir terpilih (khusus tambahan)|Delete selected dhikr (custom only)|حذف الذكر المحدد (المضاف فقط)
+Ganti dzikir|Change dhikr|تغيير الذكر
+Undo|Undo|تراجع
+Suara|Sound|الصوت
+Volume|Volume|مستوى الصوت
+Suara tasbih|Tasbih sound|صوت المسبحة
+Suara latar alam|Nature background sound|أصوات الطبيعة
+Volume suara latar|Background volume|مستوى صوت الخلفية
+Voice (ucapan dzikir)|Voice (dhikr recitation)|الصوت (تلاوة الذكر)
+Tes suara|Test sound|اختبار الصوت
+Suara tema objek (mobil, samsak, dll.)|Theme sound effects (car, punching bag, etc.)|مؤثرات السمة (سيارة، كيس الملاكمة، إلخ)
+Voice saat mode Auto|Voice in Auto mode|الصوت في الوضع التلقائي
+Getar saat target|Vibrate at target|اهتزاز عند الهدف
+Rekam suara sendiri (untuk dzikir terpilih)|Record your own voice (selected dhikr)|سجّل صوتك (للذكر المحدد)
+● Rekam|● Record|● تسجيل
+■ Stop|■ Stop|■ إيقاف
+▶ Putar|▶ Play|▶ تشغيل
+🗑 Hapus|🗑 Delete|🗑 حذف
+Urutan suara dzikir: rekaman Anda, lalu file audio, lalu suara perangkat.|Dhikr audio order: your recording, then audio file, then device voice.|ترتيب صوت الذكر: تسجيلك، ثم الملف الصوتي، ثم صوت الجهاز.
+Bahasa|Language|اللغة
+Pengingat harian|Daily reminder|تذكير يومي
+Jam pengingat harian|Daily reminder time|وقت التذكير اليومي
+Ingatkan lanjut dzikir setelah 30 menit berhenti|Remind me to continue dhikr after 30 minutes of inactivity|ذكّرني بإكمال الذكر بعد 30 دقيقة من التوقف
+Pengingat hanya berfungsi di aplikasi Android.|Reminders only work in the Android app.|التذكيرات تعمل فقط في تطبيق أندرويد.
+Punya kode premium?|Have a premium code?|هل لديك رمز بريميوم؟
+Aktifkan|Activate|تفعيل
+Mati|Off|إيقاف
+Nyala|On|تشغيل
+Mangkuk|Bowl|وعاء رنان
+Kayu|Wood|خشب
+Lonceng|Bell|جرس
+Tombol ditekan|Button press|نقرة زر
+Kalimba C|Kalimba C|كاليمبا دو
+Kalimba E|Kalimba E|كاليمبا مي
+Kalimba G|Kalimba G|كاليمبا صول
+Kalimba A|Kalimba A|كاليمبا لا
+Kalimba C tinggi|High Kalimba C|كاليمبا دو عالٍ
+Kalimba E tinggi|High Kalimba E|كاليمبا مي عالٍ
+Tiap hitungan|Every count|كل عدّة
+Saat target|At target|عند الهدف
+Hujan|Rain|مطر
+Ombak|Waves|أمواج
+Angin|Wind|رياح
+Sungai|River|نهر
+Hutan|Forest|غابة
+Lingkaran|Circle|دائرة
+Lingkaran Penuh|Full circle|دائرة كاملة
+Lingkaran Vertikal|Vertical circle|دائرة عمودية
+Lurus|Straight|مستقيم
+Samping|Side|جانبي
+Emas|Gold|ذهبي
+Zamrud|Emerald|زمردي
+Rubi|Ruby|ياقوتي
+Mutiara|Pearl|لؤلؤي
+Obsidian|Obsidian|سبج
+Malam|Night|ليل
+Samudra|Ocean|محيط
+Fajar|Dawn|فجر
+Gurun|Desert|صحراء
+Hitam|Black|أسود
+Hitam Pekat|Pitch black|أسود حالك
+Putih|White|أبيض
+Klasik|Classic|كلاسيكي
+Dial Teks|Text dial|قرص النص
+Air Sumur|Well water|ماء البئر
+Pohon Tumbuh|Growing tree|شجرة تنمو
+Matahari Terbit|Sunrise|شروق الشمس
+Mobil Menanjak|Car climbing a mountain|سيارة تصعد الجبل
+Hati Bersih|Clean heart|قلب نقي
+Isi Baterai|Charge battery|شحن البطارية
+Bersih Jendela|Clean window|تنظيف النافذة
+Beri Makan Ikan|Feed the fish|إطعام السمك
+Siram Api|Put out fire|إطفاء النار
+Ambil Dolar ATM|Take dollars from ATM|سحب الدولار من الصراف
+Kantong Dinar|Dinar pouch|كيس الدنانير
+Pukul Samsak|Punch the bag|ضرب كيس الملاكمة
+Panah|Archery|الرماية
+Cuci Baju Putih|Wash white shirt|غسل القميص الأبيض
+Siram Bunga|Water the flower|سقي الزهرة
+Tendang Bola|Kick the ball|ركل الكرة
+Lempar Batu ke Setan|Stone the devil|رمي الشيطان بالحجارة
+Olahraga|Workout|تمارين رياضية
+Pabrik Donat|Donut factory|مصنع الدونات
+Push up|Push up|تمرين الضغط
+Pull up|Pull up|تمرين العقلة
+Sit up|Sit up|تمرين البطن
+Reset hitungan ke 0?|Reset the count to 0?|إعادة العدّ إلى 0؟
+Rekaman Anda: ada (dipakai untuk dzikir ini)|Your recording: available (used for this dhikr)|تسجيلك: موجود (يُستخدم لهذا الذكر)
+Rekaman Anda: belum ada|Your recording: none yet|تسجيلك: غير موجود بعد
+Merekam... ucapkan dzikir, lalu ketuk Stop|Recording... say the dhikr, then tap Stop|جارٍ التسجيل... قل الذكر ثم اضغط إيقاف
+Mikrofon tidak bisa dipakai. Izinkan akses mikrofon untuk aplikasi.|Microphone unavailable. Please allow microphone access.|الميكروفون غير متاح. يرجى السماح بالوصول إليه.
+Belum ada rekaman|No recording yet|لا يوجد تسجيل بعد
+Suara Arab tersedia di perangkat ini.|Arabic voice is available on this device.|الصوت العربي متاح على هذا الجهاز.
+Tidak ada suara Arab di perangkat, jadi dzikir dibaca versi Latin.|No Arabic voice on this device, so the dhikr is read in Latin.|لا يوجد صوت عربي على الجهاز، لذا يُقرأ الذكر بالحروف اللاتينية.
+Perangkat belum menyediakan suara pembaca.|This device has no text-to-speech voice yet.|لا يوفر الجهاز صوتًا قارئًا بعد.
+Otomatis|Automatic|تلقائي
+Premium aktif. Terima kasih!|Premium is active. Thank you!|البريميوم مفعّل. شكرًا لك!
+Buka semua fitur premium:|Unlock all premium features:|افتح جميع ميزات بريميوم:
+Uji coba gratis|Free trial|تجربة مجانية
+hari tersisa|days left|أيام متبقية
+Semua fitur premium terbuka.|All premium features are unlocked.|جميع ميزات بريميوم مفتوحة.
+Pembelian hanya tersedia di aplikasi Android dari Play Store.|Purchases are only available in the Android app from Play Store.|الشراء متاح فقط في تطبيق أندرويد من متجر Play.
+Produk belum tersedia. Coba lagi nanti.|Product not available yet. Try again later.|المنتج غير متاح بعد. حاول لاحقًا.
+Pembelian dibatalkan atau gagal.|Purchase canceled or failed.|تم إلغاء الشراء أو فشل.
+Pemulihan hanya tersedia di aplikasi Android.|Restore is only available in the Android app.|الاستعادة متاحة فقط في تطبيق أندرويد.
+Kode salah.|Wrong code.|الرمز غير صحيح.
+Kode tidak dapat diperiksa di perangkat ini.|Cannot verify the code on this device.|لا يمكن التحقق من الرمز على هذا الجهاز.
+Premium selamanya aktif.|Lifetime premium activated.|تم تفعيل بريميوم مدى الحياة.
+dari|of|من
+tanpa batas|no limit|بلا حد
+putaran ke-|round |الجولة 
+Jeda antar hitungan|Pause between counts|الفاصل بين العدّات
+detik|seconds|ثوانٍ
+Waktunya berdzikir|Time for dhikr|حان وقت الذكر
+Anda belum berdzikir hari ini. Yuk lanjutkan dzikir Anda.|You have not done dhikr today. Let us continue.|لم تذكر الله اليوم. هيا نكمل.
+Lanjutkan dzikir Anda|Continue your dhikr|أكمل ذكرك
+Belum mencapai target. Yuk lanjutkan.|Target not reached yet. Let us continue.|لم تبلغ الهدف بعد. هيا نكمل.`.split("\n").forEach(l=>{const a=l.split("|");DICT[a[0]]=[a[1],a[2]]});
+function tr(x){if(typeof x!=="string"||S.lang==="id")return x;if(x.startsWith("🔒 "))return "🔒 "+tr(x.slice(3));const d=DICT[x];return d?d[S.lang==="en"?0:1]:x}
+(function(){const d=Object.getOwnPropertyDescriptor(Node.prototype,"textContent"),o=d.set;Object.defineProperty(Node.prototype,"textContent",{get:d.get,set(v){o.call(this,typeof v==="string"?tr(v):v)},configurable:true})})();
+function applyLang(){document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==="ar"?"rtl":"ltr";
+ const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(n.parentNode.tagName==="SCRIPT"||n.parentNode.tagName==="STYLE")continue;const raw=n._o||n.nodeValue,k=raw.trim();if(k&&DICT[k]){n._o=raw;n.nodeValue=raw.replace(k,tr(k))}}
+ document.querySelectorAll("[placeholder],[title]").forEach(e=>{["placeholder","title"].forEach(a=>{if(e.hasAttribute(a)){e["_"+a]=e["_"+a]||e.getAttribute(a);e.setAttribute(a,tr(e["_"+a]))}})})}
+function refreshText(){build();ui();buildP();recSt();gl();fillV();applyLang()}
 const list=()=>[...DEF,...S.custom];
 const cur=()=>list()[S.dz]||list()[0];
 
@@ -99,7 +270,7 @@ wood(t){tone(420,t,"sine",.3,.18,200)},
 bell(t){[660,990,1320].forEach((f,i)=>tone(f,t,"sine",.16/(i+1),1.8,0,.02))},
 press(t){tone(1500,t,"triangle",.14,.05,700,.002);tone(260,t+.004,"sine",.12,.07,140,.002)},
 k1(t){kal(t,261.6)},k2(t){kal(t,329.6)},k3(t){kal(t,392)},k4(t){kal(t,440)},k5(t){kal(t,523.3)},k6(t){kal(t,659.3)}};
-function noi(t,d,f0,f1,g,q){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),e=AC.createGain();s.buffer=nbuf(1);f.type="bandpass";f.Q.value=q||1;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+d);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+Math.min(.03,d/3));e.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(e);e.connect(MG);s.start(t,Math.random(),d+.05);s.stop(t+d+.1)}
+function noi(t,d,f0,f1,g,q,dst,pan){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),e=AC.createGain();s.buffer=nbuf(1);f.type="bandpass";f.Q.value=q||1;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+d);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+Math.min(.03,d/3));e.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(e);if(AC.createStereoPanner&&pan!==undefined){const pn=AC.createStereoPanner();pn.pan.value=pan;e.connect(pn);pn.connect(dst||MG)}else e.connect(dst||MG);s.start(t,Math.random(),d+.05);s.stop(t+d+.1)}
 const TS={
 1(t){tone(1800,t,"square",.05,.03,900,.002);noi(t,.03,3000,2000,.1,2)},
 2(t){tone(700,t,"sine",.14,.35,420,.01);tone(1050,t+.1,"sine",.06,.3,600,.01)},
@@ -114,12 +285,18 @@ const TS={
 11(t){for(let i=0;i<5;i++)noi(t+i*.07,.05,4000,2500,.1,3);tone(160,t,"sawtooth",.05,.4,200,.01)},
 12(t){tone(2100,t,"sine",.12,.9,0,.002);tone(3150,t,"sine",.06,.7,0,.002);tone(1400,t+.05,"sine",.07,.8,0,.002)},
 13(t){tone(110,t+.1,"sine",.5,.18,45,.002);noi(t+.1,.12,900,200,.25,.8)},
-14(t){tone(240,t,"triangle",.16,.3,180,.003);noi(t+.18,.25,3000,1000,.09,.6)}};
+14(t){tone(240,t,"triangle",.16,.3,180,.003);noi(t+.18,.25,3000,1000,.09,.6)},
+15(t){noi(t,.22,1400,3200,.12,1.4);noi(t+.1,.2,3200,1600,.1,1.4);tone(900+Math.random()*400,t+.16,"sine",.04,.12,1500,.004)},
+16(t){noi(t,.5,1800,4200,.1,.7);for(let i=0;i<4;i++)tone(900+Math.random()*500,t+.1+i*.07,"sine",.03,.08,1300,.004)},
+17(t){tone(120,t+.12,"sine",.5,.15,60,.002);noi(t+.12,.08,700,200,.2,.8);noi(t+.5,.3,2500,1000,.09,.5)},
+18(t){noi(t,.3,1200,500,.08,.8);tone(160,t+.4,"sine",.3,.12,70,.002);noi(t+.4,.08,1500,400,.15,1)},
+19(t){noi(t,.25,500,150,.12,.7);tone(95,t+.28,"sine",.25,.2,60,.01)},
+20(t){for(let i=0;i<10;i++)noi(t+.15+i*.03,.03,5000,3000,.05,4);tone(130,t,"sawtooth",.04,.25,100,.01)}};
 function themeSfx(){const f=TS[S.ob];if(!f)return;au();f(AC.currentTime)}
-function play(){if(!S.sOn)return;au();SND[S.snd](AC.currentTime)}
+function play(){if(!S.sOn)return;au();SND[lockedSn(S.snd)?"k1":S.snd](AC.currentTime)}
 function fillV(){const e=$("#vc");if(!e)return;const v=("speechSynthesis" in window)?[...speechSynthesis.getVoices()]:[];const A=x=>/^ar/i.test(x.lang)?1:0,I=x=>/^id/i.test(x.lang)?1:0;
  v.sort((a,b)=>(A(b)-A(a))||(I(b)-I(a)));
- e.innerHTML="<option value=''>Otomatis</option>"+v.map(x=>"<option value='"+x.voiceURI+"'>"+x.name+" ("+x.lang+")</option>").join("");e.value=S.vc;
+ e.innerHTML="<option value=''>"+tr("Otomatis")+"</option>"+v.map(x=>"<option value='"+x.voiceURI+"'>"+x.name+" ("+x.lang+")</option>").join("");e.value=S.vc;
  $("#vst").textContent=v.length?(v.some(A)?"Suara Arab tersedia di perangkat ini.":"Tidak ada suara Arab di perangkat, jadi dzikir dibaca versi Latin."):"Perangkat belum menyediakan suara pembaca."}
 function tts(d,fin){if(!("speechSynthesis" in window)){fin();return}const vs=speechSynthesis.getVoices();
  const vo=vs.find(x=>x.voiceURI===S.vc)||vs.find(x=>/^ar/i.test(x.lang)&&d.ar)||vs.find(x=>/^id/i.test(x.lang))||vs[0];
@@ -128,50 +305,55 @@ function tts(d,fin){if(!("speechSynthesis" in window)){fin();return}const vs=spe
  if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u)}
 const DBP=new Promise(r=>{try{const q=indexedDB.open("tasbih",1);q.onupgradeneeded=()=>q.result.createObjectStore("rec");q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
 const idb=(m,k,v)=>DBP.then(d=>d?new Promise(r=>{const t=d.transaction("rec",m==="get"?"readonly":"readwrite").objectStore("rec"),q=m==="get"?t.get(k):m==="set"?t.put(v,k):t.delete(k);q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}):null);
-const slug=()=>cur().t.toLowerCase().replace(/[^a-z]/g,"")||"k"+S.dz;
+const slug=d=>{d=d||cur();return d.t.toLowerCase().replace(/[^a-z]/g,"")||"k"+list().indexOf(d)};
 async function recSt(){const b=await idb("get",slug());$("#rcs").textContent=b?"Rekaman Anda: ada (dipakai untuk dzikir ini)":"Rekaman Anda: belum ada"}
 let MR=null,CHK=[];
 async function recStart(){try{const st=await navigator.mediaDevices.getUserMedia({audio:true});CHK=[];const k=slug();MR=new MediaRecorder(st);MR.ondataavailable=e=>CHK.push(e.data);
  MR.onstop=async()=>{st.getTracks().forEach(t=>t.stop());await idb("set",k,new Blob(CHK,{type:MR.mimeType||"audio/webm"}));recSt()};MR.start();$("#rcs").textContent="Merekam... ucapkan dzikir, lalu ketuk Stop"}
  catch(e){$("#rcs").textContent="Mikrofon tidak bisa dipakai. Izinkan akses mikrofon untuk aplikasi."}}
-function say(cb){let c=0,t=0;const fin=()=>{if(!c){c=1;cb&&cb()}},go=d=>{if(!t){t=1;tts(d,fin)}};
- const d=cur(),k=slug();setTimeout(fin,12000);
- idb("get",k).then(b=>{const a=new Audio(b?URL.createObjectURL(b):"audio/"+k+".mp3");a.volume=S.vol;a.onended=fin;a.onerror=()=>go(d);a.play().catch(()=>go(d))})}
+function say(cb,dd){let c=0,t=0;const fin=()=>{if(!c){c=1;cb&&cb()}},go=d=>{if(!t){t=1;tts(d,fin)}};
+ const d=dd||cur(),k=slug(d);setTimeout(fin,12000);
+ idb("get",k).then(b=>{if(!isP())b=null;const u=[];if(b)u.push(URL.createObjectURL(b));u.push("audio/"+k+".mp3",k+".mp3");let i=0;const nx=()=>{if(i>=u.length){go(d);return}const a=new Audio(u[i++]);let ok=0;const f=()=>{if(!ok){ok=1;nx()}};a.volume=S.vol;a.onended=fin;a.onerror=f;a.play().catch(f)};nx()})}
 const vib=p=>{if(!S.vb)return;try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 
 /* suara latar */
-const AMB=[["rain","Hujan"],["wave","Ombak"],["wind","Angin"],["river","Sungai"]];
+const AMB=[["rain","Hujan"],["wave","Ombak"],["wind","Angin"],["river","Sungai"],["forest","Hutan"]];
 let NB={},AM=null;
 function nbuf(w){if(!NB[w]){const b=AC.createBuffer(1,AC.sampleRate*3,AC.sampleRate),d=b.getChannelData(0);let q=0;for(let i=0;i<d.length;i++){const x=Math.random()*2-1;q=(q+.02*x)/1.02;d[i]=w?x*.5:q*3.5}NB[w]=b}return NB[w]}
-function stopAmb(){if(!AM)return;AM.n.forEach(n=>{try{n.stop()}catch(e){}});clearInterval(AM.t);try{AM.g.disconnect()}catch(e){}AM=null}
-function startAmb(){stopAmb();if(!S.aOn)return;au();
- const g=AC.createGain();g.gain.value=S.avol;g.connect(AC.destination);
- const src=AC.createBufferSource();src.loop=true;const w=S.amb==="rain"||S.amb==="river";src.buffer=nbuf(w);
- const f=AC.createBiquadFilter(),m=AC.createGain(),L=AC.createOscillator(),lg=AC.createGain();AM={g,n:[src,L],t:0};
- L.connect(lg);
- if(S.amb==="rain"){f.type="highpass";f.frequency.value=1000;m.gain.value=.5;
-  AM.t=setInterval(()=>{if(Math.random()<.5)tone(1500+Math.random()*2500,AC.currentTime,"sine",.04,.08,600)},220)}
- else if(S.amb==="wave"){f.type="lowpass";f.frequency.value=700;m.gain.value=.5;L.frequency.value=.11;lg.gain.value=.4;lg.connect(m.gain)}
- else if(S.amb==="wind"){f.type="bandpass";f.frequency.value=500;f.Q.value=.8;m.gain.value=.9;L.frequency.value=.07;lg.gain.value=250;lg.connect(f.frequency)}
- else{f.type="bandpass";f.frequency.value=1400;f.Q.value=.6;m.gain.value=.7;L.frequency.value=.4;lg.gain.value=.15;lg.connect(m.gain)}
- src.connect(f);f.connect(m);m.connect(g);src.start();L.start()}
+function stopAmb(){if(!AM)return;AM.n.forEach(n=>{try{n.stop()}catch(e){}});clearInterval(AM.t);if(AM.a)try{AM.a.pause()}catch(e){}try{if(AM.g)AM.g.disconnect()}catch(e){}AM=null}
+const getB=n=>fetch("audio/"+n).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).catch(()=>fetch(n).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}));
+function startAmb(){stopAmb();if(!S.aOn)return;au();const my=AM={g:null,n:[],t:0,a:null};
+ getB("alam-"+S.amb+".mp3").then(b=>AC.decodeAudioData(b)).then(buf=>{if(AM!==my)return;const g=AC.createGain();g.gain.value=S.avol;g.connect(AC.destination);my.g=g;
+  const D=buf.duration,F=Math.min(2.5,D*.15),play=t=>{if(AM!==my)return;const s=AC.createBufferSource(),e=AC.createGain();s.buffer=buf;s.connect(e);e.connect(g);e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(1,t+F);e.gain.setValueAtTime(1,t+D-F);e.gain.linearRampToValueAtTime(0,t+D);s.start(t);my.n.push(s);if(my.n.length>4)my.n.shift();my.t=setTimeout(()=>play(t+D-F),Math.max(0,(t+D-F-AC.currentTime-.5)*1000))};play(AC.currentTime+.05)}).catch(()=>{if(AM===my)synth(my)})}
+function bl(t,f,f2,g,d,dst,pan){const o=AC.createOscillator(),e=AC.createGain();o.type="sine";o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f2,t+d*.8);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+.01);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);
+ if(AC.createStereoPanner){const p=AC.createStereoPanner();p.pan.value=pan||0;e.connect(p);p.connect(dst)}else e.connect(dst);o.start(t);o.stop(t+d+.05)}
+function synth(my){const g=AC.createGain();g.gain.value=S.avol;g.connect(AC.destination);my.g=g;const k=S.amb;
+ const lay=(w,type,f,q,gn)=>{const s=AC.createBufferSource();s.loop=true;s.buffer=nbuf(w);const fl=AC.createBiquadFilter(),m=AC.createGain();fl.type=type;fl.frequency.value=f;fl.Q.value=q;m.gain.value=gn;s.connect(fl);fl.connect(m);m.connect(g);s.start(0,Math.random()*2);my.n.push(s);return{fl,m}};
+ const lfo=(p,f,amt)=>{const o=AC.createOscillator(),a=AC.createGain();o.frequency.value=f;a.gain.value=amt;o.connect(a);a.connect(p);o.start();my.n.push(o)};
+ if(k==="rain"){lay(1,"bandpass",3200,.3,.5);lay(1,"highpass",6000,.5,.05);lay(0,"lowpass",220,.7,.5);
+  my.t=setInterval(()=>{for(let i=0;i<2;i++)if(Math.random()<.55){const f=2200+Math.random()*5800;noi(AC.currentTime+Math.random()*.04,.012+Math.random()*.03,f,f*.55,.03+Math.random()*.08,3+Math.random()*3,g,Math.random()*1.8-.9)}},40)}
+ else if(k==="wave"){const a=lay(0,"lowpass",700,.7,.5);lfo(a.m.gain,.11,.4);const b=lay(1,"highpass",2500,.5,.03);lfo(b.m.gain,.11,.03)}
+ else if(k==="wind"){const a=lay(0,"bandpass",450,1.2,.9),b=lay(0,"bandpass",900,2,.5);lfo(a.fl.frequency,.07,200);lfo(b.fl.frequency,.11,320);lay(1,"highpass",2500,.5,.015);
+  my.t=setInterval(()=>{const t=AC.currentTime,v=.3+Math.random()*1.1;[a,b].forEach(x=>{x.m.gain.cancelScheduledValues(t);x.m.gain.setValueAtTime(x.m.gain.value,t);x.m.gain.linearRampToValueAtTime(v*(x===a?.9:.5),t+2.5+Math.random()*2)})},4500)}
+ else{const a=lay(1,"bandpass",1100,.5,.28);lfo(a.m.gain,.35,.08);lay(0,"lowpass",500,.7,.35);lay(1,"highpass",3500,.5,.03);
+  my.t=setInterval(()=>{if(Math.random()<.7){const f=450+Math.random()*1300;bl(AC.currentTime,f,f*(1.5+Math.random()),.02+Math.random()*.04,.05+Math.random()*.09,g,Math.random()*1.6-.8)}},70)}}
 
 /* counting */
 let tp=0,pos=0;
 let auto=0,aT=0;
 function setAuto(on){auto=on;clearTimeout(aT);try{speechSynthesis.cancel()}catch(e){}$("#au").textContent=on?"⏸ Stop":"▶ Auto";$("#au").classList.toggle("on",!!on);if(on){au();autoLoop()}}
-function autoLoop(){if(!auto)return;tap(true);if(!auto)return;const go=()=>{if(auto)aT=setTimeout(autoLoop,S.gp*1000)};S.av?say(go):go()}
-function tap(a){if(S.aOn&&!AM)startAmb();S.n++;tp++;play();if(S.tOn)themeSfx();vib(8);const now=performance.now();FX.push(now);
+function autoLoop(){if(!auto)return;const d=tap(true),go=()=>{if(auto)aT=setTimeout(autoLoop,S.gp*1000)};if(!auto){if(S.av)say(null,d);return}S.av?say(go,d):go()}
+function tap(a){const old=cur();if(S.aOn&&!AM)startAmb();S.n++;tp++;play();if(S.tOn)themeSfx();vib(8);const now=performance.now();FX.push(now);
  if(S.ob===2)DR.push(now);if(S.ob===9)GN.push({t:now,x:cw*.15+Math.random()*cw*.7});if(S.ob===11)GN.push({t:now});if(S.ob===12)GN.push({t:now,dx:(Math.random()-.5)*60});
  if(S.ob===14){const an=Math.random()*6.283,rd=Math.random()*(1-.7*prog())*.95;AR.push({t:now,hx:Math.cos(an)*rd,hy:Math.sin(an)*rd})}
- if(S.tg&&S.n>=S.tg){S.n=0;S.r++;vib([250,100,250,100,500]);shake();if(S.sOn){au();tone(528,AC.currentTime+.1,"sine",.4,3)}if(auto)setAuto(0);if(S.vOn||a)say();setTimeout(()=>{AR=[]},1500)}
+ if(S.tg&&S.n>=S.tg){S.n=0;S.r++;vib([250,100,250,100,500]);shake();if(S.sOn){au();tone(528,AC.currentTime+.1,"sine",.4,3)}const lastD=S.dz>=list().length-1;S.dz=lastD?0:S.dz+1;if(auto&&lastD)setAuto(0);if(!a&&S.vOn)say(null,old);setTimeout(()=>{AR=[]},1500)}
  else if(S.vOn&&S.vo==="each"&&!a)say();
- ui();save()}
+ ui();save();return old}
 function shake(){[cv,$("#cnt")].forEach(e=>{e.classList.remove("shake");void e.offsetWidth;e.classList.add("shake")})}
 function ui(){const d=cur();$("#ar").textContent=d.ar||d.t;$("#lt").textContent=d.ar?d.t:"";
- $("#n").textContent=S.n;$("#of").textContent=(S.tg?"dari "+S.tg:"tanpa batas")+(S.r?" · putaran ke-"+(S.r+1):"");
- $("#fill").style.width=(S.tg?S.n/S.tg*100:0)+"%"}
-function theme(){const t=TH[S.th],r=document.documentElement.style;r.setProperty("--a",t[1]);r.setProperty("--b",t[2]);r.setProperty("--ac",t[3])}
+ $("#n").textContent=S.n;$("#of").textContent=(S.tg?tr("dari")+" "+S.tg:tr("tanpa batas"))+(S.r?" · "+tr("putaran ke-")+(S.r+1):"");
+ $("#fill").style.width=(S.tg?S.n/S.tg*100:0)+"%";nIdleSched()}
+function theme(){const t=TH[S.th],r=document.documentElement.style;r.setProperty("--a",t[1]);r.setProperty("--b",t[2]);r.setProperty("--ac",t[3]);const lt=S.ob===0&&t[5];r.setProperty("--tx",lt?t[4]:"#f4f1e8");document.body.classList.toggle("light",!!lt)}
 
 /* canvas 3D */
 const cv=$("#cv"),ctx=cv.getContext("2d");let cw=0,ch=0,FH=0,ay=0,DP=1,GS=44,SP=0,GN=[],AR=[],BB=[],FS={x:0,y:0,d:1},yaw=0,yawT=0,drag=0,ST=[],FX=[],DR=[];
@@ -183,6 +365,7 @@ addEventListener("resize",size);
 const mix=(a,b,t)=>a+(b-a)*t;
 function mixc(a,b,t){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16)),A=p(a),B=p(b);return"rgb("+A.map((v,i)=>Math.round(mix(v,B[i],t))).join(",")+")"}
 const prog=()=>Math.min(1,S.tg?S.n/S.tg:(S.n%100)/100);
+const rnd=f=>{const x=Math.sin(f*12.9898)*43758.5453;return x-Math.floor(x)};
 function stars(a,t){ST.forEach(s=>{ctx.globalAlpha=a*(.45+.55*Math.sin(t/600+s[2]));ctx.fillStyle="#fff";ctx.fillRect(s[0]*cw,s[1]*FH-ay,s[3],s[3])});ctx.globalAlpha=1}
 function bead(x,y,r,shade,glow,c,ox){c=c||BC[S.bc];ox=ox||1;const q=ctx.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r*1.2);q.addColorStop(0,c[1]);q.addColorStop(1,c[2]);
  ctx.beginPath();ctx.ellipse(x,y,r*ox,r,0,0,7);ctx.shadowBlur=glow?26:0;ctx.shadowColor=TH[S.th][3];ctx.fillStyle=q;ctx.fill();ctx.shadowBlur=0;
@@ -203,7 +386,7 @@ function beads(ly,cx,cy,w,h,c,M0){
   else{x=k*gap;y=x*x/(w*.9);z=Zs-Math.abs(k)*gap*.15}
   const xx=x*Math.cos(yaw)+z*Math.sin(yaw),zz=-x*Math.sin(yaw)+z*Math.cos(yaw),sc=f/(f-zz);
   P.push({k,sx:cx+xx*sc,sy:cy+y*sc,r:rb*sc,z:zz,sh:Math.max(0,Math.min(.62,(1.1-zz/Zs)*.26))})}
- ctx.strokeStyle="rgba(255,255,255,.3)";ctx.lineWidth=2;ctx.beginPath();
+ ctx.strokeStyle=document.body.classList.contains("light")?"rgba(0,0,0,.35)":"rgba(255,255,255,.3)";ctx.lineWidth=2;ctx.beginPath();
  for(let i=0;i<M;i++){const a=P[i],b=P[(i+1)%M];if(ly==="ring"||ly==="vring"||Math.abs(a.k-b.k)<1.5){ctx.moveTo(a.sx,a.sy);ctx.lineTo(b.sx,b.sy)}}ctx.stroke();
  [...P].sort((a,b)=>a.z-b.z).forEach(p=>{ctx.beginPath();if(ly==="vring")ctx.ellipse(p.sx+p.r*.75,p.sy+p.r*.1,p.r*.5,p.r*.95,0,0,7);else ctx.ellipse(p.sx,p.sy+p.r*1.5,p.r*.8,p.r*.25,0,0,7);ctx.fillStyle="rgba(0,0,0,.2)";ctx.fill();bead(p.sx,p.sy,p.r,p.sh,Math.abs(p.k)<.5,c,ly==="vring"?.9:1)});
  if(ly==="ring"){const q=P.reduce((a,b)=>Math.abs(a.k)<Math.abs(b.k)?a:b);tassel(q.sx,q.sy+q.r*1.6,q.r*.9)}}
@@ -372,11 +555,82 @@ function panah(t){const W=cw,H=ch,now=performance.now(),tx=W*.7,ty=H*.42,R=Math.
  AR=AR.slice(-24);AR.forEach(a=>{const k=Math.min(1,(now-a.t)/450),ex=tx+a.hx*R,ey=ty+a.hy*R,x=mix(bx,ex,k),y=mix(by,ey,k)-Math.sin(k*Math.PI)*H*.12,dy=(ey-by)-Math.cos(k*Math.PI)*Math.PI*H*.12,an=Math.atan2(k<1?dy:(ey-by)*.5,ex-bx),L=R*1.3;
   ctx.save();ctx.translate(x,y);ctx.rotate(an);ctx.strokeStyle="#c9a063";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-L,0);ctx.lineTo(0,0);ctx.stroke();
   ctx.fillStyle="#888";ctx.beginPath();ctx.moveTo(0,-5);ctx.lineTo(12,0);ctx.lineTo(0,5);ctx.fill();ctx.strokeStyle="#e53935";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-L,0);ctx.lineTo(-L-6,-5);ctx.moveTo(-L,0);ctx.lineTo(-L-6,5);ctx.stroke();ctx.restore()})}
+function baju(t){const p=SP,W=cw,H=ch,now=performance.now(),cx=W/2;let off=0,sc=0;
+ FX.forEach(f=>{const a=now-f;off+=Math.exp(-a/280)*Math.sin(a/45)*W*.035;sc+=Math.exp(-a/600)});sc=Math.min(1,sc);
+ ctx.fillStyle=LG([[0,"#bfe3f2"],[1,"#eaf7fc"]]);ctx.fillRect(0,-ay,W,FH);ctx.fillStyle="#d6e6ee";ctx.fillRect(0,H*.78,W,FH-ay-H*.78);
+ const ty=H*.64;ctx.fillStyle="#2f86c0";ctx.beginPath();ctx.moveTo(W*.05,ty);ctx.lineTo(W*.95,ty);ctx.lineTo(W*.86,H*.97);ctx.lineTo(W*.14,H*.97);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#8fd0f3";ctx.beginPath();ctx.ellipse(cx,ty,W*.45,H*.05,0,0,7);ctx.fill();
+ rr(cx-W*.3,H*.08,W*.6,H*.6,18);ctx.fillStyle="#c79a5e";ctx.fill();ctx.strokeStyle="#a87a40";ctx.lineWidth=3;for(let y=H*.1;y<H*.66;y+=H*.03){ctx.beginPath();ctx.moveTo(cx-W*.27,y);ctx.lineTo(cx+W*.27,y);ctx.stroke()}
+ if(p>.2){const g=ctx.createRadialGradient(cx,H*.36,0,cx,H*.36,W*.5);g.addColorStop(0,"rgba(255,255,255,"+.6*p+")");g.addColorStop(1,"rgba(255,255,255,0)");ctx.fillStyle=g;ctx.fillRect(0,-ay,W,FH)}
+ const sw=W*.46,sh=H*.42,sx=cx-sw/2+off,sy=H*.17,P=[[.32,0],[.68,0],[.98,.16],[.86,.34],[.76,.28],[.76,1],[.24,1],[.24,.28],[.14,.34],[.02,.16]];
+ const shirt=()=>{ctx.beginPath();P.forEach(([a,b],i)=>i?ctx.lineTo(sx+a*sw,sy+b*sh):ctx.moveTo(sx+a*sw,sy+b*sh));ctx.closePath()};
+ shirt();ctx.fillStyle=mixc("#9c8468","#ffffff",p);ctx.fill();ctx.save();shirt();ctx.clip();
+ for(let i=0;i<Math.floor((1-p)*60);i++){const q=ST[i];ctx.fillStyle=i%3===0?"rgba(90,60,30,.55)":i%3===1?"rgba(40,40,60,.45)":"rgba(120,90,40,.5)";ctx.beginPath();ctx.arc(sx+q[0]*sw,sy+q[1]*sh,sw*.03+q[3]*sw*.02,0,7);ctx.fill()}ctx.restore();
+ shirt();ctx.strokeStyle="#aab7c0";ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.ellipse(sx+sw*.5,sy,sw*.14,sh*.05,0,0,Math.PI);ctx.fillStyle=mixc("#7c6648","#e9eef2",p);ctx.fill();
+ const hy=H*.34+Math.sin(now/90)*sc*6;ctx.fillStyle="#e8b894";[-.12,.12].forEach(d=>{rr(cx+off+W*d-W*.07,hy,W*.14,H*.07,H*.035);ctx.fill()});
+ ctx.fillStyle="rgba(255,255,255,.9)";ctx.strokeStyle="rgba(120,190,230,.8)";ctx.lineWidth=1.5;const nb=16+Math.floor(sc*24);
+ for(let i=0;i<nb;i++){const q=ST[i%ST.length],x=q[0]*W,y=ty-((now/25+i*37)%(H*.12))*(i%2?1:.6)+q[1]*H*.06,r=3+q[3]*3;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();ctx.stroke()}
+ if(sc>.2){ctx.fillStyle="rgba(140,205,245,.8)";for(let i=0;i<8;i++){const a=i*.8+now/200,r=W*.2+((now/6+i*30)%60);ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,H*.36-Math.abs(Math.sin(a))*r*.5,3,0,7);ctx.fill()}}
+ if(p>.9){ctx.fillStyle="rgba(255,240,150,.95)";for(let i=0;i<6;i++){const a=i*1.05+now/500,r=sw*.7,z=3+3*Math.sin(now/180+i);ctx.fillRect(cx+Math.cos(a)*r-z/2,H*.36+Math.sin(a)*r*.6-z/2,z,z)}}}
+function bunga(t){const p=SP,W=cw,H=ch,now=performance.now(),cx=W*.58,gy=H*.8;let sc=0;FX.forEach(f=>{sc+=Math.exp(-(now-f)/500)});sc=Math.min(1,sc);
+ ctx.fillStyle=LG([[0,"#bfe6ff"],[1,"#eaf7ff"]],-ay,gy);ctx.fillRect(0,-ay,W,gy+ay);ctx.fillStyle=mixc("#9a8b5a","#6cc04a",p);ctx.fillRect(0,gy,W,FH-ay-gy);
+ ctx.fillStyle="#ffe27a";ctx.beginPath();ctx.arc(W*.85,H*.12,W*.06,0,7);ctx.fill();
+ const pw=W*.26,ph=H*.16,py=gy-ph,L=H*.42*p+H*.02,sw=Math.sin(t/700)*4*p,tx=cx+sw,ty=py-L;
+ ctx.strokeStyle="#3a9b3a";ctx.lineWidth=Math.max(3,W*.012);ctx.beginPath();ctx.moveTo(cx,py);ctx.quadraticCurveTo(cx+sw*.5,py-L*.5,tx,ty);ctx.stroke();
+ ctx.fillStyle="#4cb84c";for(let i=1;i<=4;i++){const f=i/5;if(f>p+.15)continue;const y=py-L*f,x=cx+sw*f*.6,s=W*.05*(1-f*.3),d=i%2?1:-1;ctx.beginPath();ctx.ellipse(x+d*s*.9,y,s,s*.45,-d*.5,0,7);ctx.fill()}
+ const fr=W*.1*Math.max(0,Math.min(1,(p-.3)/.6));if(fr>2){for(let i=0;i<8;i++){const a=i*.785+t/3000;ctx.fillStyle=i%2?"#ff6fa5":"#ff8fb8";ctx.beginPath();ctx.ellipse(tx+Math.cos(a)*fr*.7,ty+Math.sin(a)*fr*.7,fr*.5,fr*.28,a,0,7);ctx.fill()}ctx.fillStyle="#ffd54f";ctx.beginPath();ctx.arc(tx,ty,fr*.33,0,7);ctx.fill()}
+ ctx.fillStyle="#c8683a";ctx.beginPath();ctx.moveTo(cx-pw*.5,py);ctx.lineTo(cx+pw*.5,py);ctx.lineTo(cx+pw*.38,gy);ctx.lineTo(cx-pw*.38,gy);ctx.closePath();ctx.fill();ctx.fillStyle="#b5572d";ctx.fillRect(cx-pw*.55,py-H*.02,pw*1.1,H*.03);
+ ctx.fillStyle=mixc("#7a5a3a","#3b2a1a",Math.min(1,sc+p*.5));ctx.beginPath();ctx.ellipse(cx,py-H*.005,pw*.45,H*.012,0,0,7);ctx.fill();
+ const cxn=W*.2,cyn=H*.34,tl=sc*.55;ctx.save();ctx.translate(cxn,cyn);ctx.rotate(tl);rr(-W*.1,-H*.05,W*.2,H*.1,10);ctx.fillStyle="#4a90d9";ctx.fill();
+ ctx.strokeStyle="#3a74b0";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(W*.1,H*.02);ctx.lineTo(W*.2,-H*.04);ctx.stroke();ctx.beginPath();ctx.arc(-W*.1,0,H*.035,Math.PI*.5,Math.PI*1.5);ctx.stroke();ctx.restore();
+ const tipx=cxn+Math.cos(tl)*W*.2+Math.sin(tl)*H*.04,tipy=cyn+Math.sin(tl)*W*.2-Math.cos(tl)*H*.04;
+ if(sc>.1){ctx.fillStyle="rgba(120,190,255,.9)";for(let i=0;i<14;i++){const k=((now/350+i/14)%1),x=mix(tipx,cx,k),y=mix(tipy,py-H*.02,k*k)-Math.sin(k*Math.PI)*H*.02;ctx.beginPath();ctx.arc(x,y,3,0,7);ctx.fill()}}}
+function bola(t){const W=cw,H=ch,now=performance.now(),gx=W*.12,gw=W*.76,gy=H*.12,gh=H*.28;
+ ctx.fillStyle=LG([[0,"#6ec6ff"],[1,"#c9ecff"]],-ay,H*.2);ctx.fillRect(0,-ay,W,H*.2+ay);ctx.fillStyle="#3f9a46";ctx.fillRect(0,H*.2,W,FH-ay-H*.2);
+ ctx.strokeStyle="rgba(255,255,255,.35)";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,H*.62);ctx.lineTo(W,H*.62);ctx.stroke();
+ ctx.strokeStyle="rgba(255,255,255,.5)";ctx.lineWidth=1;for(let i=0;i<=16;i++){ctx.beginPath();ctx.moveTo(gx+gw*i/16,gy);ctx.lineTo(gx+gw*i/16,gy+gh);ctx.stroke()}for(let j=0;j<=8;j++){ctx.beginPath();ctx.moveTo(gx,gy+gh*j/8);ctx.lineTo(gx+gw,gy+gh*j/8);ctx.stroke()}
+ const last=FX.length?FX[FX.length-1]:0,la=now-last;let kx=gx+gw*.5+Math.sin(now/700)*gw*.22;if(last&&la<900){const sd=rnd(last)<.5?-1:1;kx=gx+gw*.5-sd*gw*.22*Math.min(1,la/350)}
+ ctx.fillStyle="#ffcc00";rr(kx-W*.03,gy+gh*.4,W*.06,gh*.55,6);ctx.fill();ctx.fillStyle="#ffd9b0";ctx.beginPath();ctx.arc(kx,gy+gh*.33,W*.03,0,7);ctx.fill();ctx.strokeStyle="#ffcc00";ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(kx-W*.03,gy+gh*.5);ctx.lineTo(kx-W*.07,gy+gh*.4);ctx.moveTo(kx+W*.03,gy+gh*.5);ctx.lineTo(kx+W*.07,gy+gh*.4);ctx.stroke();
+ ctx.strokeStyle="#fff";ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(gx,gy+gh);ctx.lineTo(gx,gy);ctx.lineTo(gx+gw,gy);ctx.lineTo(gx+gw,gy+gh);ctx.stroke();
+ const ball=(x,y,r,al)=>{ctx.globalAlpha=al;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();ctx.strokeStyle="#222";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="#222";ctx.beginPath();ctx.arc(x,y,r*.35,0,7);ctx.fill();ctx.globalAlpha=1};
+ if(!(last&&la<900))ball(W*.5,H*.86,W*.06,1);
+ FX.forEach(f=>{const a=now-f,k=Math.min(1,a/550),sd=rnd(f)<.5?-1:1,ex=gx+gw*(.5+sd*(.2+.2*rnd(f+1))),ey=gy+gh*(.3+.4*rnd(f+2));ball(mix(W*.5,ex,k),mix(H*.86,ey,k)-Math.sin(k*Math.PI)*H*.1,mix(W*.06,W*.028,k),a<900?1:1-(a-900)/100);
+  if(a>550&&a<1000){ctx.fillStyle="#ffd54f";ctx.textAlign="center";ctx.font="bold "+H*.06+"px system-ui";ctx.fillText("GOAL!",W/2,H*.5);ctx.textAlign="left"}});
+ const px=W*.3,py=H*.86,sw=last&&la<250?-.6+la/250*1.5:-.2;ctx.strokeStyle="#4a90d9";ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(px,py-H*.1);ctx.lineTo(px,py-H*.25);ctx.moveTo(px,py-H*.1);ctx.lineTo(px+Math.sin(sw)*H*.12,py+Math.cos(sw)*H*.01);ctx.moveTo(px,py-H*.1);ctx.lineTo(px-W*.03,py);ctx.stroke();ctx.lineCap="butt";ctx.fillStyle="#ffd9b0";ctx.beginPath();ctx.arc(px,py-H*.29,W*.032,0,7);ctx.fill()}
+function setan(t){const p=SP,W=cw,H=ch,now=performance.now(),cx=W/2,by=H*.78;
+ ctx.fillStyle=LG([[0,"#3a2a52"],[1,"#f0a46a"]],-ay,by);ctx.fillRect(0,-ay,W,by+ay);ctx.fillStyle="#a8865a";ctx.fillRect(0,by,W,FH-ay-by);
+ const last=FX.length?FX[FX.length-1]:0,la=now-last,sh=last&&la<300?Math.sin(la/25)*6*(1-la/300):0,s=1-.55*p;
+ ctx.fillStyle="#8e8a84";rr(cx-W*.11+sh,H*.3,W*.22,by-H*.3,10);ctx.fill();ctx.fillStyle="rgba(0,0,0,.12)";for(let y=H*.34;y<by;y+=H*.05)ctx.fillRect(cx-W*.11+sh,y,W*.22,2);
+ const fx0=cx+sh,fy0=H*.3,u=W*.09*s;ctx.fillStyle=mixc("#1a1020","#6a5a78",p);ctx.beginPath();ctx.arc(fx0,fy0-u*.8,u,0,7);ctx.fill();
+ ctx.beginPath();ctx.moveTo(fx0-u*.8,fy0-u*1.4);ctx.lineTo(fx0-u*1.2,fy0-u*2.4);ctx.lineTo(fx0-u*.2,fy0-u*1.7);ctx.fill();ctx.beginPath();ctx.moveTo(fx0+u*.8,fy0-u*1.4);ctx.lineTo(fx0+u*1.2,fy0-u*2.4);ctx.lineTo(fx0+u*.2,fy0-u*1.7);ctx.fill();
+ ctx.fillStyle="#ff3b30";ctx.beginPath();ctx.arc(fx0-u*.35,fy0-u*.9,u*.14,0,7);ctx.arc(fx0+u*.35,fy0-u*.9,u*.14,0,7);ctx.fill();
+ FX.forEach(f=>{const a=now-f,k=Math.min(1,a/450);if(a<450){const sx=W*(.3+.4*rnd(f)),x=mix(sx,fx0,k),y=mix(H*.92,fy0-u*.5,k)-Math.sin(k*Math.PI)*H*.15;ctx.fillStyle="#d8d2c6";ctx.beginPath();ctx.arc(x,y,W*.02*(1-k*.4),0,7);ctx.fill()}else if(a<700){ctx.fillStyle="rgba(255,255,200,"+(1-(a-450)/250)+")";ctx.beginPath();ctx.arc(fx0,fy0-u*.6,u*(.8+(a-450)/200),0,7);ctx.fill()}});
+ ctx.fillStyle="#bdb5a5";for(let i=0;i<Math.floor(p*30);i++){const q=ST[i];ctx.beginPath();ctx.arc(cx+(q[0]-.5)*W*.5,by+q[1]*H*.08,3+q[3]*2,0,7);ctx.fill()}}
+function olah(t){const p=SP,W=cw,H=ch,now=performance.now(),gy=H*.78,cx=W/2;
+ ctx.fillStyle=LG([[0,"#1f2733"],[1,"#2e3846"]]);ctx.fillRect(0,-ay,W,FH);ctx.fillStyle="#3b4656";ctx.fillRect(0,gy,W,FH-ay-gy);
+ const last=FX.length?FX[FX.length-1]:0,la=now-last;let d=0;if(last&&la<600)d=la<300?la/300:1-(la-300)/300;
+ const ex=p<.34?0:p<.67?1:2,hd=(x,y)=>{ctx.fillStyle="#ffd9b0";ctx.beginPath();ctx.arc(x,y,W*.045,0,7);ctx.fill()};
+ ctx.strokeStyle="#ffd27a";ctx.lineWidth=Math.max(6,W*.022);ctx.lineCap="round";ctx.lineJoin="round";
+ if(ex===0){const fx0=cx-W*.32,sx=cx+W*.1,sh=mix(H*.17,H*.07,d);ctx.beginPath();ctx.moveTo(fx0,gy);ctx.lineTo(sx,gy-sh);ctx.stroke();ctx.beginPath();ctx.moveTo(sx,gy-sh);ctx.lineTo(sx+W*.02+d*W*.06,gy-sh*.5);ctx.lineTo(sx+W*.05,gy);ctx.stroke();hd(sx+W*.07,gy-sh-W*.03)}
+ else if(ex===1){const by=H*.16,ys=by+mix(H*.26,H*.07,d);ctx.strokeStyle="#9aa7b4";ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(cx-W*.3,by);ctx.lineTo(cx+W*.3,by);ctx.stroke();ctx.strokeStyle="#ffd27a";ctx.lineWidth=Math.max(6,W*.022);
+  ctx.beginPath();ctx.moveTo(cx-W*.1,by);ctx.lineTo(cx-W*.04,ys);ctx.moveTo(cx+W*.1,by);ctx.lineTo(cx+W*.04,ys);ctx.moveTo(cx,ys);ctx.lineTo(cx,ys+H*.2);ctx.moveTo(cx,ys+H*.2);ctx.lineTo(cx-W*.05,ys+H*.34);ctx.moveTo(cx,ys+H*.2);ctx.lineTo(cx+W*.05,ys+H*.34);ctx.stroke();hd(cx,ys-W*.05)}
+ else{const hx=cx,hy=gy-H*.01,L=H*.26,th=d*1.35,tx=hx-Math.cos(th)*L,ty=hy-Math.sin(th)*L;ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(tx,ty);ctx.moveTo(hx,hy);ctx.lineTo(hx+W*.16,hy-H*.1);ctx.lineTo(hx+W*.3,hy);ctx.moveTo(tx,ty);ctx.lineTo(hx+W*.14,hy-H*.1);ctx.stroke();hd(tx-Math.cos(th)*W*.05,ty-Math.sin(th)*W*.05)}
+ ctx.lineCap="butt";ctx.fillStyle="#fff";ctx.textAlign="center";ctx.font="bold "+H*.05+"px system-ui";ctx.fillText(tr(["Push up","Pull up","Sit up"][ex]).toUpperCase(),cx,H*.09);ctx.textAlign="left"}
+function donat(t){const W=cw,H=ch,now=performance.now(),cx=W/2,by=H*.66,sp=W*.34,r=W*.11,la=FX.length?now-FX[FX.length-1]:9999;
+ ctx.fillStyle=LG([[0,"#4a5568"],[1,"#2d3748"]]);ctx.fillRect(0,-ay,W,FH);ctx.fillStyle="#5d6b82";for(let i=0;i<3;i++)ctx.fillRect(W*(.08+i*.32),H*.04,W*.2,H*.12);ctx.strokeStyle="#8794a8";ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(0,H*.2);ctx.lineTo(W,H*.2);ctx.stroke();
+ ctx.fillStyle="#222";ctx.fillRect(0,by+H*.06,W,H*.05);ctx.strokeStyle="#555";ctx.lineWidth=2;const off=((pos*sp)%40+40)%40;for(let x=-40+off;x<W+40;x+=40){ctx.beginPath();ctx.moveTo(x,by+H*.075);ctx.lineTo(x+10,by+H*.1);ctx.stroke()}
+ ctx.fillStyle="#d64545";rr(cx-W*.16,H*.22,W*.32,H*.14,12);ctx.fill();ctx.fillStyle="#b53636";ctx.beginPath();ctx.moveTo(cx-W*.1,H*.36);ctx.lineTo(cx+W*.1,H*.36);ctx.lineTo(cx+W*.03,H*.45);ctx.lineTo(cx-W*.03,H*.45);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#fff";ctx.font="bold "+H*.03+"px system-ui";ctx.textAlign="center";ctx.fillText("TOPPING",cx,H*.31);ctx.textAlign="left";
+ const cols=["#ff4081","#ffeb3b","#4caf50","#2196f3","#fff","#ff9800"];
+ for(let i=-3;i<=3;i++){const k=Math.floor(pos)+i,x=cx+(pos-k)*sp,dd=pos-k;if(x<-r||x>W+r)continue;const top=dd>.35||(Math.abs(dd)<=.35&&la>700),y=by-r*.1,gl=["#f48fb1","#6d4023","#fff1c1"][((k%3)+3)%3];
+  ctx.fillStyle="#c98b4b";ctx.beginPath();ctx.ellipse(x,y,r,r*.55,0,0,7);ctx.fill();ctx.fillStyle=gl;ctx.beginPath();ctx.ellipse(x,y-r*.06,r*.9,r*.47,0,0,7);ctx.fill();ctx.fillStyle="#2d3748";ctx.beginPath();ctx.ellipse(x,y-r*.04,r*.3,r*.16,0,0,7);ctx.fill();
+  if(top)for(let j=0;j<26;j++){const a=rnd(k*7.1+j)*6.283,rd=.4+.5*rnd(k*3.3+j+9);ctx.fillStyle=cols[j%6];ctx.save();ctx.translate(x+Math.cos(a)*r*rd*.9,y-r*.06+Math.sin(a)*r*.42*rd);ctx.rotate(rnd(k+j)*3);ctx.fillRect(-4,-1.5,8,3);ctx.restore()}}
+ FX.forEach(f=>{const a=now-f-250;if(a>0&&a<500){const k=a/500;for(let j=0;j<14;j++){ctx.fillStyle=cols[j%6];ctx.fillRect(cx+(rnd(f+j)-.5)*r*1.4,mix(H*.45,by-r*.2,k)+rnd(f+j*2)*8,6,3)}}})}
 function fx(now){FX=FX.filter(f=>now-f<900);FX.forEach(f=>{const k=(now-f)/900;ctx.globalAlpha=1-k;ctx.fillStyle=TH[S.th][3];ctx.font="bold 22px system-ui";ctx.textAlign="center";ctx.fillText("+1",cw/2,ch*.38-k*60);ctx.textAlign="left"});ctx.globalAlpha=1}
 function draw(){const now=performance.now();area();pos+=(tp+drag-pos)*.16;yaw+=(yawT-yaw)*.1;ctx.setTransform(DP,0,0,DP,0,ay*DP);ctx.clearRect(0,-ay,cw,FH);{const q=prog();if(Math.abs(q-SP)>.5)SP=q;else SP+=(q-SP)*.12}
- const o=S.ob,N=S.tg>0?Math.min(S.tg,150):33;
+ const o=lockedOb(S.ob)?0:S.ob,N=S.tg>0?Math.min(S.tg,150):33;
  if(o===0){const l=["ring","fullring","vring","line","side"].includes(S.ly)?S.ly:"ring";GS=44;if(l==="fullring")fullring();else beads(l,cw/2,ch*(l==="side"?.42:.47),cw,ch,null,N)}
- else if(o===1)dial(N);else if(o===2)sumur();else if(o===3)pohon(now);else if(o===4)sunrise(now);else if(o===5)mobil(now);else if(o===6)hati(now);else if(o===7)baterai(now);else if(o===8)jendela(now);else if(o===9)ikan(now);else if(o===10)api(now);else if(o===11)atm(now);else if(o===12)dinar(now);else if(o===13)samsak(now);else panah(now);
+ else if(o===1)dial(N);else if(o===2)sumur();else if(o===3)pohon(now);else if(o===4)sunrise(now);else if(o===5)mobil(now);else if(o===6)hati(now);else if(o===7)baterai(now);else if(o===8)jendela(now);else if(o===9)ikan(now);else if(o===10)api(now);else if(o===11)atm(now);else if(o===12)dinar(now);else if(o===13)samsak(now);else if(o===14)panah(now);else if(o===15)baju(now);else if(o===16)bunga(now);else if(o===17)bola(now);else if(o===18)setan(now);else if(o===19)olah(now);else donat(now);
  fx(now);requestAnimationFrame(draw)}
 let pd=null,acc=0,moved=0;let STEP=44;
 cv.addEventListener("pointerdown",e=>{if(shOpen())return;pd={x:e.clientX,y:e.clientY};acc=0;moved=0;try{cv.setPointerCapture(e.pointerId)}catch(_){}});
@@ -390,7 +644,35 @@ cv.addEventListener("pointerleave",()=>{yawT=0});
 
 /* settings UI */
 function chips(id,items,get,set){const e=$(id);e.innerHTML="";items.forEach((x,i)=>{const b=document.createElement("button");b.className="chip"+(get(i)?" on":"");b.textContent=Array.isArray(x)?x[x.length>2?0:1]:x;b.onclick=()=>{set(i);chips(id,items,get,set)};e.appendChild(b)})}
-const shOpen=()=>["#sheet","#ssheet","#dsheet","#tsheet"].some(i=>$(i).classList.contains("open"));
+const shOpen=()=>["#sheet","#ssheet","#dsheet","#tsheet","#psheet"].some(i=>$(i).classList.contains("open"));
+const PROD={sub:"premium_6bulan",once:"premium_selamanya"},PREM_OB=[5,7,9,10,11,12,13,14,15,16,17,18,19,20],PREM_SN=["k2","k3","k4","k5","k6"];
+const TRIAL=7*864e5,nowT=()=>Math.max(Date.now(),S.ls||0),trialLeft=()=>Math.max(0,(S.t0||0)+TRIAL-nowT()),isP=()=>!!S.prem||!!S.dev||!!S.sec||trialLeft()>0,lockedOb=i=>PREM_OB.includes(i)&&!isP(),lockedSn=k=>PREM_SN.includes(k)&&!isP();
+function ask(t,fn){$("#cft").textContent=t;$("#cf").classList.add("open");$("#cfy").onclick=()=>{$("#cf").classList.remove("open");fn()};$("#cfn").onclick=()=>$("#cf").classList.remove("open")}
+function buildP(){const perm=!!S.prem||!!S.sec||!!S.dev,tl=trialLeft();$("#pst").textContent=perm?tr("Premium aktif. Terima kasih!"):tl>0?tr("Uji coba gratis")+": "+Math.ceil(tl/864e5)+" "+tr("hari tersisa")+". "+tr("Semua fitur premium terbuka."):tr("Buka semua fitur premium:");$("#pbuy").style.display=perm?"none":""}
+const SEC="5b44ee0cbea0dfc32b8fafe24102d458d4343b27b017ccb5be752263940c68ce";
+async function sha(x){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(x));return[...new Uint8Array(b)].map(v=>v.toString(16).padStart(2,"0")).join("")}
+async function redeem(){const v=$("#pcode").value.toUpperCase().replace(/[^A-Z0-9]/g,"");if(!v)return;let h="";try{h=await sha("tasbih-v1:"+v)}catch(e){$("#pnote").textContent="Kode tidak dapat diperiksa di perangkat ini.";return}
+ if(h===SEC){S.sec=1;save();$("#pcode").value="";build();buildP();$("#pnote").textContent="Premium selamanya aktif."}else $("#pnote").textContent="Kode salah."}
+const LN=()=>window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications;let nOk=0,nT=0;
+async function nEnsure(){const p=LN();if(!p)return false;if(nOk)return true;try{let r=await p.checkPermissions();if(r.display!=="granted")r=await p.requestPermissions();nOk=r.display==="granted";try{await p.createChannel({id:"dzikir",name:"Dzikir",importance:4})}catch(e){}return nOk}catch(e){return false}}
+async function nDaily(){const p=LN();if(!p)return;try{await p.cancel({notifications:[1,2,3,4,5,6,7].map(id=>({id}))});if(!S.nd)return;if(!(await nEnsure()))return;const hm=(S.ndt||"20:00").split(":").map(Number),L=[];
+ for(let i=1;i<=7;i++){const d=new Date();d.setDate(d.getDate()+i);d.setHours(hm[0],hm[1]||0,0,0);L.push({id:i,title:tr("Waktunya berdzikir"),body:tr("Anda belum berdzikir hari ini. Yuk lanjutkan dzikir Anda."),schedule:{at:d,allowWhileIdle:true},channelId:"dzikir"})}await p.schedule({notifications:L})}catch(e){}}
+function nIdleSched(){clearTimeout(nT);nT=setTimeout(async()=>{const p=LN();if(!p)return;try{await p.cancel({notifications:[{id:100}]});if(!S.ni||!S.tg||S.n<=0||S.n>=S.tg)return;if(!(await nEnsure()))return;
+ await p.schedule({notifications:[{id:100,title:tr("Lanjutkan dzikir Anda"),body:cur().t+" "+S.n+"/"+S.tg+" - "+tr("Belum mencapai target. Yuk lanjutkan."),schedule:{at:new Date(Date.now()+30*60000),allowWhileIdle:true},channelId:"dzikir"}]})}catch(e){}},1500)}
+const LGS=["id","en","ar"];
+function paywall(){buildP();$("#psheet").classList.add("open")}
+function setPrem(v){if(!!S.prem!==v){S.prem=v;save();build();buildP()}}
+let BI=0;
+function initBilling(){if(BI)return;const P=window.CdvPurchase;if(!P)return;BI=1;const{store,ProductType,Platform}=P,GP=Platform.GOOGLE_PLAY;
+ store.register([{id:PROD.sub,type:ProductType.PAID_SUBSCRIPTION,platform:GP},{id:PROD.once,type:ProductType.NON_CONSUMABLE,platform:GP}]);
+ store.when().approved(t=>t.finish());
+ const upd=()=>{setPrem(store.owned(PROD.sub)||store.owned(PROD.once));payInfo()};
+ store.when().productUpdated(upd).finished(upd);store.error(e=>{$("#pnote").textContent="Gagal: "+(e&&e.message||e)});
+ store.initialize([GP]).then(upd)}
+function payInfo(){const P=window.CdvPurchase;if(!P)return;[["sub","#pb1","/ 6 bulan (langganan)"],["once","#pb2","selamanya (sekali bayar)"]].forEach(([k,id,t])=>{const p=P.store.get(PROD[k],P.Platform.GOOGLE_PLAY),o=p&&p.getOffer(),ph=o&&o.pricingPhases&&o.pricingPhases[0];if(ph)$(id).textContent=ph.price+" "+t})}
+function buy(k){const P=window.CdvPurchase;if(!P){$("#pnote").textContent="Pembelian hanya tersedia di aplikasi Android dari Play Store.";return}
+ const p=P.store.get(PROD[k],P.Platform.GOOGLE_PLAY),o=p&&p.getOffer();if(!o){$("#pnote").textContent="Produk belum tersedia. Coba lagi nanti.";return}
+ o.order().then(e=>{if(e)$("#pnote").textContent="Pembelian dibatalkan atau gagal."})}
 function tog(id,get,set){const e=$(id);e.innerHTML="";["Mati","Nyala"].forEach((l,i)=>{const b=document.createElement("button");b.className="chip"+((i===1)===!!get()?" on":"");b.textContent=l;b.onclick=()=>{set(i===1);tog(id,get,set);vis()};e.appendChild(b)})}
 function vis(){[["#o-sn",S.sOn],["#o-am",S.aOn],["#o-vo",S.vOn],["#o-av",S.av]].forEach(([i,v])=>$(i).style.display=v?"":"none")}
 function buildD(){const e=$("#dl");e.innerHTML="";list().forEach((d,i)=>{const b=document.createElement("button");b.className="chip"+(S.dz===i?" on":"");b.textContent=d.t;b.onclick=()=>{S.dz=i;S.n=0;ui();save();recSt();$("#dsheet").classList.remove("open")};e.appendChild(b)})}
@@ -404,11 +686,13 @@ function build(){
  tog("#t-av",()=>S.av,v=>{S.av=v;save()});
  tog("#t-ts",()=>S.tOn,v=>{S.tOn=v;save();if(v)themeSfx()});
  tog("#t-vb",()=>S.vb,v=>{S.vb=v;save();if(v)vib(200)});
- chips("#c-sn",SN,i=>S.snd===SN[i][0],i=>{S.snd=SN[i][0];save();play()});
+ chips("#c-sn",SN.map(x=>[x[0],(lockedSn(x[0])?"🔒 ":"")+x[1]]),i=>S.snd===SN[i][0],i=>{if(lockedSn(SN[i][0])){paywall();return}S.snd=SN[i][0];save();play()});
  chips("#c-am",AMB,i=>S.amb===AMB[i][0],i=>{S.amb=AMB[i][0];save();startAmb()});
  chips("#c-vo",VO,i=>S.vo===VO[i][0],i=>{S.vo=VO[i][0];save();say()});
- vis();
- chips("#c-ob",OB,i=>S.ob===i,i=>{S.ob=i;kl();save()});
+ vis();$("#rech").textContent=tr("Rekam suara sendiri (untuk dzikir terpilih)")+(isP()?"":" 🔒");
+ chips("#c-lg",[["id","Indonesia"],["en","English"],["ar","العربية"]],i=>S.lang===LGS[i],i=>{S.lang=LGS[i];save();refreshText()});
+ tog("#t-nd",()=>S.nd,v=>{S.nd=v;save();nDaily()});tog("#t-ni",()=>S.ni,v=>{S.ni=v;save();nIdleSched()});$("#ndt").value=S.ndt;
+ chips("#c-ob",OB.map((x,i)=>[x[0],(lockedOb(i)?"🔒 ":"")+x[1]]),i=>S.ob===i,i=>{if(lockedOb(i)){paywall();return}S.ob=i;kl();theme();save()});
  chips("#c-bc",BC,i=>S.bc===i,i=>{S.bc=i;save()});
  const T=[33,99,100,1000,0];
  chips("#c-tg",T.map(x=>x||"Bebas"),i=>S.tg===T[i],i=>{S.tg=T[i];S.n=0;ui();save();$("#tsheet").classList.remove("open")});
@@ -418,8 +702,8 @@ $("#add").onclick=()=>{const v=$("#nd").value.trim();if(!v)return;S.custom.push(
 $("#del").onclick=()=>{const i=S.dz-DEF.length;if(i<0)return;S.custom.splice(i,1);S.dz=0;buildD();ui();save();recSt()};
 $("#tgb").onclick=()=>{const v=parseInt($("#tgi").value);if(v>0){S.tg=v;S.n=0;$("#tgi").value="";build();ui();save();$("#tsheet").classList.remove("open")}};
 $("#vol").value=S.vol;$("#vol").oninput=e=>{S.vol=+e.target.value;if(MG)MG.gain.value=S.vol;save()};
-$("#avl").value=S.avol;$("#avl").oninput=e=>{S.avol=+e.target.value;if(AM)AM.g.gain.value=S.avol;save()};
-$("#gp").value=S.gp;const gl=()=>$("#gpl").textContent="Jeda antar hitungan: "+S.gp+" detik";gl();$("#gp").oninput=e=>{S.gp=+e.target.value;gl();save()};
+$("#avl").value=S.avol;$("#avl").oninput=e=>{S.avol=+e.target.value;if(AM){if(AM.a)AM.a.volume=S.avol;else if(AM.g)AM.g.gain.value=S.avol}save()};
+$("#gp").value=S.gp;const gl=()=>$("#gpl").textContent=tr("Jeda antar hitungan")+": "+S.gp+" "+tr("detik");gl();$("#gp").oninput=e=>{S.gp=+e.target.value;gl();save()};
 $("#au").onclick=()=>setAuto(!auto);
 $("#vt").onclick=()=>{au();say()};$("#vc").onchange=e=>{S.vc=e.target.value;save()};fillV();if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=fillV;
 document.addEventListener("click",e=>{if(e.target.tagName==="BUTTON")e.target.blur()});
@@ -427,13 +711,16 @@ addEventListener("keydown",e=>{const t=document.activeElement.tagName;if(/INPUT|
  if([" ","Enter","ArrowUp","ArrowDown","PageDown","PageUp","AudioVolumeUp","AudioVolumeDown","VolumeUp","VolumeDown"].includes(e.key)){e.preventDefault();if(!e.repeat)tap()}});
 $("#snd").onclick=()=>{recSt();$("#ssheet").classList.add("open")};
 $("#sclose").onclick=()=>$("#ssheet").classList.remove("open");
-$("#rb1").onclick=recStart;$("#rb2").onclick=()=>{if(MR&&MR.state!=="inactive")MR.stop()};
+$("#rb1").onclick=()=>{if(!isP()){paywall();return}recStart()};$("#rb2").onclick=()=>{if(MR&&MR.state!=="inactive")MR.stop()};
 $("#rb3").onclick=async()=>{const b=await idb("get",slug());if(b){const a=new Audio(URL.createObjectURL(b));a.volume=S.vol;a.play()}else $("#rcs").textContent="Belum ada rekaman"};
 $("#rb4").onclick=async()=>{await idb("del",slug());recSt()};
+$("#pclose").onclick=()=>$("#psheet").classList.remove("open");$("#pb1").onclick=()=>buy("sub");$("#pb2").onclick=()=>buy("once");$("#pbr").onclick=()=>{const P=window.CdvPurchase;if(P)P.store.restorePurchases();else $("#pnote").textContent="Pemulihan hanya tersedia di aplikasi Android."};
+document.addEventListener("deviceready",initBilling);setTimeout(initBilling,800);
+$("#pcb").onclick=redeem;$("#ndt").onchange=e=>{S.ndt=e.target.value||"20:00";save();nDaily()};
 $("#set").onclick=()=>$("#sheet").classList.add("open");
 $("#close").onclick=()=>$("#sheet").classList.remove("open");
-$("#rst").onclick=()=>{S.n=0;S.r=0;ui();save()};
+$("#rst").onclick=()=>ask("Reset hitungan ke 0?",()=>{S.n=0;S.r=0;ui();save()});
 $("#undo").onclick=()=>{if(S.n>0){S.n--;tp--;ui();save()}};
-theme();build();ui();size();draw();
+theme();build();ui();size();draw();applyLang();nDaily();document.addEventListener("visibilitychange",()=>{if(!document.hidden){nDaily();build()}});
 if("serviceWorker" in navigator&&/^https?:/.test(location.protocol)&&location.hostname!=="localhost"){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.register("sw.js").catch(()=>{});navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had)location.reload()})}
 </script></body></html>
